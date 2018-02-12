@@ -3,8 +3,8 @@ package com.kotlinmap.andres.database_firebase_kotlin
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.util.Log
@@ -20,6 +20,8 @@ import com.kotlinmap.andres.database_firebase_kotlin.Model.UploadInfo
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_storage.*
 import kotlinx.android.synthetic.main.item_image.view.*
+import org.jetbrains.anko.toast
+
 
 class StorageActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -65,9 +67,30 @@ class StorageActivity : AppCompatActivity(), View.OnClickListener {
                         .load(model.url)
                         .error(R.drawable.common_google_signin_btn_icon_dark)
                         .into(viewHolder.itemView.imgView)
+//
+                //On list item click open new DetailActivity
+                viewHolder!!.itemView.setOnClickListener(View.OnClickListener() {
+                    Log.d("dd", "Ddd")
+                    toast("dddddd  " + model.name)
+                    val intent = Intent(this@StorageActivity, DetailActivity::class.java)
 
+//                    val intent = Intent(this, MainActivity::class.java)
+//                    startActivity(intent)
+
+                    intent.putExtra("name", model!!.name.toString())
+                    intent.putExtra("url", model!!.url.toString())
+
+
+                    startActivity(intent)
+                })
             }
-        }
+
+//              Below code scrolls to new item
+//            override fun onChildChanged(type: ChangeEventListener.EventType?, snapshot: DataSnapshot?, index: Int, oldIndex: Int) {
+//                super.onChildChanged(type, snapshot, index, oldIndex);
+//                rcvListImg.scrollToPosition(index);
+//            }
+        };
 
         rcvListImg.adapter = mAdapter
     }
