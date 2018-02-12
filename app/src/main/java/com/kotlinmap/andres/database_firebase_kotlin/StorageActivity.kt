@@ -11,7 +11,9 @@ import android.util.Log
 import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.Toast
+import com.firebase.ui.database.ChangeEventListener
 import com.firebase.ui.database.FirebaseRecyclerAdapter
+import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -56,7 +58,8 @@ class StorageActivity : AppCompatActivity(), View.OnClickListener {
         rcvListImg.setHasFixedSize(true)
         rcvListImg.layoutManager = layoutManager
 
-        val query = dataReference!!.limitToLast(3)
+        //display limit
+        val query = dataReference!!.limitToLast(15)
 
         mAdapter = object : FirebaseRecyclerAdapter<UploadInfo, ImgViewHolder>(
                 UploadInfo::class.java, R.layout.item_image, ImgViewHolder::class.java, query) {
@@ -67,31 +70,24 @@ class StorageActivity : AppCompatActivity(), View.OnClickListener {
                         .load(model.url)
                         .error(R.drawable.common_google_signin_btn_icon_dark)
                         .into(viewHolder.itemView.imgView)
-//
+
                 //On list item click open new DetailActivity
                 viewHolder!!.itemView.setOnClickListener(View.OnClickListener() {
                     Log.d("dd", "Ddd")
-                    toast("dddddd  " + model.name)
+                    toast(model.name)
                     val intent = Intent(this@StorageActivity, DetailActivity::class.java)
-
-//                    val intent = Intent(this, MainActivity::class.java)
-//                    startActivity(intent)
-
                     intent.putExtra("name", model!!.name.toString())
                     intent.putExtra("url", model!!.url.toString())
-
-
                     startActivity(intent)
                 })
             }
 
-//              Below code scrolls to new item
-//            override fun onChildChanged(type: ChangeEventListener.EventType?, snapshot: DataSnapshot?, index: Int, oldIndex: Int) {
-//                super.onChildChanged(type, snapshot, index, oldIndex);
-//                rcvListImg.scrollToPosition(index);
-//            }
+            //Below code scrolls to new item
+            override fun onChildChanged(type: ChangeEventListener.EventType?, snapshot: DataSnapshot?, index: Int, oldIndex: Int) {
+                super.onChildChanged(type, snapshot, index, oldIndex);
+                rcvListImg.scrollToPosition(index);
+            }
         };
-
         rcvListImg.adapter = mAdapter
     }
 
